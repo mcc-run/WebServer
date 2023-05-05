@@ -83,15 +83,20 @@
     <LibraryPath>F:\MySQL\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemGroup>
+    <ClCompile Include="http_conn\http_conn.cpp" />
     <ClCompile Include="log\log.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Server\server.cpp" />
     <ClCompile Include="sql_pool\sql_pool.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="http_conn\http_conn.h" />
     <ClInclude Include="lock\locker.h" />
     <ClInclude Include="lock\mutex_queue.h" />
     <ClInclude Include="log\log.h" />
+    <ClInclude Include="Server\server.h" />
     <ClInclude Include="sql_pool\sql_pool.h" />
+    <ClInclude Include="thread_pool\thread_pool.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="C:\Users\12968\Desktop\fsdownload\makefile" />

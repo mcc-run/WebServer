@@ -33,13 +33,14 @@ void log::init()
 	
 	//若今天未创建日志，则创建新的日志
 	tm* time = get_time();
+	cout << atoi(row[1]) << " " << atoi(row[2]) << " " << atoi(row[3]) << endl;
 	if (time->tm_year != atoi(row[1]) || time->tm_mon != atoi(row[2]) || time->tm_mday != atoi(row[3])) {
 		get_new_log();
 	}
 	else {
 		//当天已经创建日志，打开新的日志
-		string filename = dir + "WebServer" + to_string(time->tm_year) + to_string(time->tm_mon) + to_string(time->tm_mday);
-		if (atoi(row[6])-1 >= 0)filename += to_string(atoi(row[6])-1);
+		string filename = dir + "WebServer" + to_string(time->tm_year) + "." + to_string(time->tm_mon) + "." + to_string(time->tm_mday);
+		if (atoi(row[6])-1 > 0)filename += to_string(atoi(row[6])-1);
 
 		lock.lock();
 		filefd = open(filename.c_str(), O_RDWR);
@@ -123,6 +124,7 @@ void log::write_file()
 			lock.unlock();
 			continue;
 		}
+		if (queue == nullptr)return;
 		lock.unlock();
 
 		string log;
@@ -152,7 +154,6 @@ void log::get_new_log()
 	if (day_count)filename += to_string(day_count);
 	lock.unlock();
 	
-	cout << filename << endl;
 	int fd = open(filename.c_str(), O_CREAT | O_WRONLY, 777);
 	if (fd == -1) {
 		std::cerr << "创建新的日志文件失败\n";
@@ -165,10 +166,10 @@ void log::get_new_log()
 		filefd = fd;
 		curline = 0;
 		day_count++;
-
 		lock.unlock();
 	}
 	cout << "创建日志成功！" << filename << endl;
+	write_sql();
 }
 
 tm* log::get_time()

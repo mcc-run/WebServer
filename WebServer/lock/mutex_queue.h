@@ -1,4 +1,9 @@
-﻿#include <iostream>
+﻿#ifndef MUTEXQUEUE
+#define MUTEXQUEUE
+
+
+
+#include <iostream>
 #include <stdlib.h>
 #include <pthread.h>
 #include <sys/time.h>
@@ -201,3 +206,5 @@ private:
     int m_front;
     int m_back;
 };
+
+#endif // !MUTEXQUEUE

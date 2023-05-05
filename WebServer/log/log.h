@@ -1,6 +1,17 @@
-﻿#include "../sql_pool/sql_pool.h"
+﻿#ifndef LOG
+#define LOG
+
+
+
+#include "../sql_pool/sql_pool.h"
 #include <fcntl.h>
 #include <unistd.h>
+
+#define LOG_DEBUG(text) {log::getinstance()->write_log(0, text);}
+#define LOG_INFO(text)  {log::getinstance()->write_log(1, text);}
+#define LOG_WARN(text)  {log::getinstance()->write_log(2, text);}
+#define LOG_ERROR(text) {log::getinstance()->write_log(3, text);}
+
 
 class log
 {
@@ -54,3 +65,4 @@ private:
 
 };
 
+#endif // !LOG

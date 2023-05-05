@@ -1,4 +1,9 @@
-﻿#include <mysql.h>
+﻿#ifndef SQLPOOL
+#define SQLPOOL
+
+
+
+#include <mysql.h>
 #include "../lock/mutex_queue.h"
 
 using namespace std;
@@ -43,3 +48,4 @@ private:
 	MYSQL* con;
 };
 
+#endif // !SQLPOOL

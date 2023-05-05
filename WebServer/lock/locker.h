@@ -1,4 +1,10 @@
-﻿#include <exception>
+﻿#ifndef LOCKER
+#define LOCKER
+
+
+
+
+#include <exception>
 #include <pthread.h>
 #include <semaphore.h>
 
@@ -109,3 +115,5 @@ private:
     //static pthread_mutex_t m_mutex;
     pthread_cond_t m_cond;
 };
+
+#endif // !LOCKER
