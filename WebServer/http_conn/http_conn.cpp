@@ -26,8 +26,7 @@ void http_conn::initmysql_result()
     //在user表中检索username，passwd数据，浏览器端输入
     if (mysql_query(mysql, "SELECT username,passwd FROM user"))
     {
-        string info = mysql_error(mysql);
-        LOG_ERROR(info);
+        LOG_ERROR(mysql_error(mysql));
     }
 
     //从表中检索完整的结果集
@@ -315,7 +314,8 @@ http_conn::HTTP_CODE http_conn::parse_headers(char* text)
     }
     else
     {
-        string info = text;
+        string str = text;
+        auto info = str.c_str();
         LOG_INFO(info);
     }
     return NO_REQUEST;
@@ -344,8 +344,9 @@ http_conn::HTTP_CODE http_conn::process_read()
     {
         text = get_line();
         m_start_line = m_checked_idx;
-        string info = text;
-        LOG_INFO(text);
+        string str = text;
+        auto info = str.c_str();
+        LOG_INFO(info);
         switch (m_check_state)
         {
             //解析请求行
@@ -619,7 +620,8 @@ bool http_conn::add_response(const char* format, ...)
     //清空可变参数列表
     va_end(arg_list);
 
-    string info = m_write_buf;
+    string str = m_write_buf;
+    auto info = str.c_str();
     LOG_INFO(info);
 
     return true;

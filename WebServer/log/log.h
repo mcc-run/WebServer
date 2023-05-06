@@ -47,7 +47,7 @@ public:
 
 	void init();	//初始化日志
 
-	bool write_log(int level, string text);	//将信息写入日志队列中
+	bool write_log(int level,const char* text);	//将信息写入日志队列中
 
 private:
 

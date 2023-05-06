@@ -136,7 +136,8 @@ void WebServer::adjust_timer(util_timer* timer)
     time_t cur = time(NULL);
     timer->expire = cur + 3 * TIMESLOT;
     utils.m_timer_lst.adjust_timer(timer);
-    string info = "adjust timer once";
+    string str = "adjust timer once";
+    auto info = str.c_str();
     LOG_INFO(info);
 }
 
@@ -147,7 +148,8 @@ void WebServer::deal_timer(util_timer* timer, int sockfd)
     {
         utils.m_timer_lst.del_timer(timer);
     }
-    string info = "关闭文件描述符：" + to_string(users_timer[sockfd].sockfd);
+    string str = "关闭文件描述符：" + to_string(users_timer[sockfd].sockfd);
+    const char* info = str.c_str();
     LOG_INFO(info);
 }
 
@@ -156,20 +158,21 @@ bool WebServer::dealclinetdata()
 {
     struct sockaddr_in client_address;
     socklen_t client_addrlength = sizeof(client_address);
-    cout << "123456" << endl;
     while (1)
     {
         int connfd = accept(m_listenfd, (struct sockaddr*)&client_address, &client_addrlength);
         if (connfd < 0)
         {
-            string err = "链接错误，错误编码是" + to_string(errno);
+            string str = "链接错误，错误编码是" + errno;
+            auto err = str.c_str();
             LOG_ERROR(err);
             break;
         }
         if (http_conn::m_user_count >= MAX_FD)
         {
             utils.show_error(connfd, "Internal server busy");
-            string err = "Internal server busy";
+            string str = "Internal server busy";
+            auto err = str.c_str();
             LOG_ERROR(err);
             break;
         }
@@ -223,7 +226,8 @@ void WebServer::dealwithread(int sockfd)
     //proactor
     if (users[sockfd].read_once())
     {
-        string info = "处理客户端" + string(inet_ntoa(users[sockfd].get_address()->sin_addr));
+        string str = "处理客户端" + string(inet_ntoa(users[sockfd].get_address()->sin_addr));
+        auto info = str.c_str();
         LOG_INFO(info);
 
         //若监测到读事件，将该事件放入请求队列
@@ -248,7 +252,8 @@ void WebServer::dealwithwrite(int sockfd)
     //proactor
     if (users[sockfd].write())
     {
-        string info = "发送数据给客户端" + string(inet_ntoa(users[sockfd].get_address()->sin_addr));
+        string str = "发送数据给客户端" + string(inet_ntoa(users[sockfd].get_address()->sin_addr));
+        auto info = str.c_str();
         LOG_INFO(info);
 
         if (timer)
@@ -274,7 +279,8 @@ void WebServer::eventLoop()
         int number = epoll_wait(m_epollfd, events, MAX_EVENT_NUMBER, -1);
         if (number < 0 && errno != EINTR)
         {
-            string err = "epoll failure";
+            string str = "epoll failure";
+            auto err = str.c_str();
             LOG_ERROR(err);
             break;
         }
@@ -302,7 +308,8 @@ void WebServer::eventLoop()
             {
                 bool flag = dealwithsignal(timeout, stop_server);
                 if (false == flag) {
-                    string err = "dealclientdata failure";
+                    string str = "处理信号失败";
+                    auto err = str.c_str();
                     LOG_ERROR(err);
                 }
             }
@@ -319,7 +326,8 @@ void WebServer::eventLoop()
         if (timeout)
         {
             utils.timer_handler();
-            string info = "timer tick";
+            string str = "处理超时链接";
+            auto info = str.c_str();
             LOG_INFO(info);
 
             timeout = false;

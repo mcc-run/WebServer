@@ -7,11 +7,12 @@ void log::init()
 	dir = "LOG/";
 
 	lock.lock();
+	cout << "10 lock" << endl;
 	curline = 0;
 	day_count = 0;
 	filefd = -1;
 	lock.unlock();
-
+	cout << "14 unlock" << endl;
 	//从数据库中获取最新的日志文件信息
 	MYSQL* conn =  nullptr;
 	sql_pool_RAII getcon(&conn);
@@ -43,8 +44,10 @@ void log::init()
 		if (atoi(row[6])-1 > 0)filename += to_string(atoi(row[6])-1);
 
 		lock.lock();
+		cout << "47 lock" << endl;
 		filefd = open(filename.c_str(), O_RDWR);
 		lock.unlock();
+		cout << "50 unlock" << endl;
 
 		if (filefd == -1) {
 			//文件打开失败
@@ -53,9 +56,11 @@ void log::init()
 		else
 		{
 			lock.lock();
+			cout << "59 lock" << endl;
 			curline = atoi(row[5]);
 			day_count = atoi(row[6]);
 			lock.unlock();
+			cout << "63 unlock" << endl;
 		}
 	}
 
@@ -64,12 +69,13 @@ void log::init()
 	pthread_create(&tid, NULL, flush_log_thread, NULL);
 }
 
-bool log::write_log(int level,string text)
+bool log::write_log(int level,const char* text)
 {
 	lock.lock();
+	cout << "75 lock" << endl;
 	if (filefd == -1)return false;
 	lock.unlock();
-
+	cout << "78 unlock" << endl;
 	tm* time = get_time();
 	string log = to_string(time->tm_hour) + ":" + to_string(time->tm_min) + ":" + to_string(time->tm_sec) + " ";
 
@@ -113,28 +119,35 @@ void log::write_file()
 	
 	while (true)
 	{
-		cout << "1" << endl;
 		lock.lock();
+		cout << "124 lock" << endl;
+		cout << curline << " " << maxline << " " << (curline >= maxline) << endl;
 		if (curline >= maxline) {
 			lock.unlock();
+			cout << "127 unlock" << endl;
 			get_new_log();
 			lock.lock();
+			cout << "130 lock" << endl;
 		}
+		cout << filefd << endl;
 		if (filefd == -1)
 		{
 			lock.unlock();
+			cout << "135 unlock" << endl;
 			continue;
 		}
+		cout << (queue == nullptr) << endl;
 		if (queue == nullptr)return;
 		lock.unlock();
-
+		cout << "140 unlock" << endl;
 		string log;
 		queue->pop(log);
 
 		lock.lock();
+		cout << "145 lock" << endl;
 		int fd = filefd;
 		lock.unlock();
-
+		cout << "148 unlock" << endl;
 		write(fd, log.c_str(), log.length());
 	}
 }
@@ -142,19 +155,23 @@ void log::write_file()
 void log::get_new_log()
 {
 	lock.lock();
+	cout << "156 lock" << endl;
 	if (filefd != -1) {
 		close(filefd);
 		lock.unlock();
+		cout << "160 unlock" << endl;
 		write_sql();
 	}
 	else lock.unlock();
+	cout << "164 unlock" << endl;
 
 	tm* time = get_time();
 	string filename = dir + "WebServer" + to_string(time->tm_year) + "." + to_string(time->tm_mon) + "." + to_string(time->tm_mday);
 	lock.lock();
+	cout << "169 lock" << endl;
 	if (day_count)filename += to_string(day_count);
 	lock.unlock();
-	
+	cout << "172 unlock" << endl;
 	int fd = open(filename.c_str(), O_CREAT | O_WRONLY, 777);
 	if (fd == -1) {
 		std::cerr << "创建新的日志文件失败\n";
@@ -163,11 +180,12 @@ void log::get_new_log()
 	else
 	{
 		lock.lock();
-
+		cout << "181 lock" << endl;
 		filefd = fd;
 		curline = 0;
 		day_count++;
 		lock.unlock();
+		cout << "186 unlock" << endl;
 	}
 	cout << "创建日志成功！" << filename << endl;
 	write_sql();
@@ -186,9 +204,11 @@ tm* log::get_time()
 void log::write_sql()
 {
 	lock.lock();
+	cout << "205 lock" << endl;
 	int cur = curline;
 	int count = day_count;
 	lock.unlock();
+	cout << "209 unlock" << endl;
 
 	tm* time = get_time();
 	string sql = "INSERT INTO log(year,month,day,name,cur_line,day_count) VALUES(";
