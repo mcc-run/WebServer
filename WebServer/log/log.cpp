@@ -113,6 +113,7 @@ void log::write_file()
 	
 	while (true)
 	{
+		cout << "1" << endl;
 		lock.lock();
 		if (curline >= maxline) {
 			lock.unlock();

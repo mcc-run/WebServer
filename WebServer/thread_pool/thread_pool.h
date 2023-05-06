@@ -16,7 +16,7 @@ private:
 	int max_request;	//最大请求数
 	int cur_request;	//当前请求数
 
-	list<T> requests;	//请求列表
+	list<T*> requests;	//请求列表
 
 	sem isrquest;	//信号量，等待请求到来
 	
@@ -25,24 +25,22 @@ private:
 
 public:
 
-	static thread_pool* getinstance() {
-		static thread_pool instance;
-		return &instance;
-	}
+	thread_pool() { init(); }
 
 	void init();	//初始化
 
 
 	bool append(T* request);
 
-
-private:
-
-	thread_pool() {}
-
 	~thread_pool() {
 		delete[] mthreads;
 	}
+
+
+private:
+
+
+	
 
 	/*工作线程运行的函数，它不断从工作队列中取出任务并执行之*/
 	static void* worker(void* arg);
@@ -65,15 +63,15 @@ inline void thread_pool<T>::init()
 
 	for (int i = 0; i < thread_count; i++)
 	{
-		if (pthread_create(m_threads + i, NULL, worker, this) != 0)
+		if (pthread_create(mthreads + i, NULL, worker, this) != 0)
 		{
-			delete[] m_threads;
+			delete[] mthreads;
 			LOG_ERROR("线程创建失败");
 			throw std::exception();
 		}
-		if (pthread_detach(m_threads[i]))
+		if (pthread_detach(mthreads[i]))
 		{
-			delete[] m_threads;
+			delete[] mthreads;
 			LOG_ERROR("线程分离失败");
 			throw std::exception();
 		}
@@ -102,7 +100,8 @@ inline bool thread_pool<T>::append(T* request)
 template<typename T>
 inline void* thread_pool<T>::worker(void* arg)
 {
-	thread_pool::getinstance()->run();
+	thread_pool* pool = (thread_pool*)arg;
+	pool->run();
 	return nullptr;
 }
 
@@ -120,12 +119,13 @@ inline void thread_pool<T>::run()
 		}
 
 		//取出任务
-		T* request = requests.pop_front();
+		T* request = requests.front();
+		requests.pop_front();
 		lock.unlock();
 
 		if (request == nullptr)continue;
-		//调用request的do_request方法开始处理请求
-		request->work();
+		//处理请求
+		request->process();
 	}
 }
 

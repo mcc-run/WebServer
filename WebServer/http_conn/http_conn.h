@@ -97,9 +97,7 @@ public:
     void init(int sockfd, const sockaddr_in& addr);
     //关闭http连接
     void close_conn(bool real_close = true);
-
-    //用于被工作线程调用
-    void work();
+    
 
     //用于处理客户端的请求
     void process();

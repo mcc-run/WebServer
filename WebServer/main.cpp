@@ -1,18 +1,26 @@
 ﻿#include <iostream>
-#include "log/log.h"
-#include "http_conn/http_conn.h"
+#include "Server/webserver.h"
 
 using namespace std;
 
 int main()
 {
+	
+	WebServer server;
 
-	sql_pool::getinstance()->init();
+	server.init();
 
-	log::getinstance()->init();
+	server.Sql_pool();
 
-	http_conn user;
-	user.initmysql_result();
+	server.log_write();
+
+	server.threads_pool();
+
+	server.eventListen();
+
+	server.eventLoop();
+
+	
 
     return 0;
 }
