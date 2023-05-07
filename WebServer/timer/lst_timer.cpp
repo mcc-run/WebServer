@@ -1,4 +1,4 @@
-#include "lst_timer.h"
+ï»¿#include "lst_timer.h"
 
 
 
@@ -151,7 +151,7 @@ void Utils::init(int timeslot)
     m_TIMESLOT = timeslot;
 }
 
-//¶ÔÎÄ¼þÃèÊö·ûÉèÖÃ·Ç×èÈû
+//å¯¹æ–‡ä»¶æè¿°ç¬¦è®¾ç½®éžé˜»å¡ž
 int Utils::setnonblocking(int fd)
 {
     int old_option = fcntl(fd, F_GETFL);
@@ -160,7 +160,7 @@ int Utils::setnonblocking(int fd)
     return old_option;
 }
 
-//½«ÄÚºËÊÂ¼þ±í×¢²á¶ÁÊÂ¼þ£¬ETÄ£Ê½£¬Ñ¡Ôñ¿ªÆôEPOLLONESHOT
+//å°†å†…æ ¸äº‹ä»¶è¡¨æ³¨å†Œè¯»äº‹ä»¶ï¼ŒETæ¨¡å¼ï¼Œé€‰æ‹©å¼€å¯EPOLLONESHOT
 void Utils::addfd(int epollfd, int fd, bool one_shot)
 {
     epoll_event event;
@@ -174,32 +174,37 @@ void Utils::addfd(int epollfd, int fd, bool one_shot)
     setnonblocking(fd);
 }
 
-//ÐÅºÅ´¦Àíº¯Êý
+//ä¿¡å·å¤„ç†å‡½æ•°
 void Utils::sig_handler(int sig)
 {
-    //Îª±£Ö¤º¯ÊýµÄ¿ÉÖØÈëÐÔ£¬±£ÁôÔ­À´µÄerrno
+    //ä¸ºä¿è¯å‡½æ•°çš„å¯é‡å…¥æ€§ï¼Œä¿ç•™åŽŸæ¥çš„errno
     int save_errno = errno;
     int msg = sig;
     send(u_pipefd[1], (char*)&msg, 1, 0);
     errno = save_errno;
 }
 
-//ÉèÖÃÐÅºÅº¯Êý
+void Utils::sig_int(int sig)
+{
+    exit(0);
+}
+
+//è®¾ç½®ä¿¡å·å‡½æ•°
 void Utils::addsig(int sig, void(handler)(int), bool restart)
 {
     struct sigaction sa;
     memset(&sa, '\0', sizeof(sa));
     sa.sa_handler = handler;
     if (restart)
-        //±»ÆäËûÐÅºÅÖÐ¶Ïºó£¬ÖØÐÂÆô¶¯
+        //è¢«å…¶ä»–ä¿¡å·ä¸­æ–­åŽï¼Œé‡æ–°å¯åŠ¨
         sa.sa_flags |= SA_RESTART;
 
-    //ÐÅºÅ´¦Àíº¯ÊýÖ´ÐÐÆÚ¼ä£¬ÆÁ±ÎËùÓÐÐÅºÅ
+    //ä¿¡å·å¤„ç†å‡½æ•°æ‰§è¡ŒæœŸé—´ï¼Œå±è”½æ‰€æœ‰ä¿¡å·
     sigfillset(&sa.sa_mask);
     assert(sigaction(sig, &sa, NULL) != -1);
 }
 
-//¶¨Ê±´¦ÀíÈÎÎñ£¬ÖØÐÂ¶¨Ê±ÒÔ²»¶Ï´¥·¢SIGALRMÐÅºÅ
+//å®šæ—¶å¤„ç†ä»»åŠ¡ï¼Œé‡æ–°å®šæ—¶ä»¥ä¸æ–­è§¦å‘SIGALRMä¿¡å·
 void Utils::timer_handler()
 {
     m_timer_lst.tick();
@@ -220,7 +225,7 @@ void cb_func(client_data* user_data)
 {
     epoll_ctl(Utils::u_epollfd, EPOLL_CTL_DEL, user_data->sockfd, 0);
 
-    //¼ì²âÊÇ·ñÎªnull£¬nullÔò´íÎóÖÕÖ¹³ÌÐò
+    //æ£€æµ‹æ˜¯å¦ä¸ºnullï¼Œnullåˆ™é”™è¯¯ç»ˆæ­¢ç¨‹åº
     assert(user_data);
 
     close(user_data->sockfd);

@@ -12,9 +12,11 @@
 #define LOG_WARN(text)  {log::getinstance()->write_log(2, text);}
 #define LOG_ERROR(text) {log::getinstance()->write_log(3, text);}
 
+class Utils;
 
 class log
 {
+	friend class Utils;
 private:
 
 	mutex_queue<string>* queue;		//日志信息存放队列
@@ -48,6 +50,7 @@ public:
 	void init();	//初始化日志
 
 	bool write_log(int level,const char* text);	//将信息写入日志队列中
+
 
 private:
 

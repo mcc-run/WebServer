@@ -100,9 +100,6 @@
     <ClInclude Include="timer\lst_timer.h" />
     <ClInclude Include="Server\webserver.h" />
   </ItemGroup>
-  <ItemGroup>
-    <None Include="C:\Users\12968\Desktop\fsdownload\makefile" />
-  </ItemGroup>
   <ItemDefinitionGroup />
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />

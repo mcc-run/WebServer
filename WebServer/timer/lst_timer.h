@@ -1,4 +1,4 @@
-#ifndef TIMER
+ï»¿#ifndef TIMER
 #define TIMER
 
 #include <unistd.h>
@@ -26,51 +26,51 @@
 
 class util_timer;
 
-//Á¬½Ó×ÊÔ´
+//è¿æ¥èµ„æº
 struct client_data
 {
-    //¿Í»§¶ËsocketµØÖ·
+    //å®¢æˆ·ç«¯socketåœ°å€
     sockaddr_in address;
-    //socketÎÄ¼şÃèÊö·û
+    //socketæ–‡ä»¶æè¿°ç¬¦
     int sockfd;
-    //¶¨Ê±Æ÷
+    //å®šæ—¶å™¨
     util_timer* timer;
 };
 
-//¶¨Ê±Æ÷Àà
+//å®šæ—¶å™¨ç±»
 class util_timer
 {
 public:
     util_timer() : prev(NULL), next(NULL) {}
 
 public:
-    //³¬¹ıÊ±¼ä
+    //è¶…è¿‡æ—¶é—´
     time_t expire;
 
-    //»Øµ÷º¯Êı
+    //å›è°ƒå‡½æ•°
     void (*cb_func)(client_data*);
-    //Á¬½Ó×ÊÔ´
+    //è¿æ¥èµ„æº
     client_data* user_data;
-    //Ç°Ïò¶¨Ê±Æ÷
+    //å‰å‘å®šæ—¶å™¨
     util_timer* prev;
-    //ºóÏò¶¨Ê±Æ÷
+    //åå‘å®šæ—¶å™¨
     util_timer* next;
 };
 
-//¶¨Ê±Æ÷ÈİÆ÷Àà
+//å®šæ—¶å™¨å®¹å™¨ç±»
 class sort_timer_lst
 {
 public:
     sort_timer_lst();
     ~sort_timer_lst();
 
-    //Ìí¼Ó¶¨Ê±Æ÷
+    //æ·»åŠ å®šæ—¶å™¨
     void add_timer(util_timer* timer);
-    //µ÷Õû¶¨Ê±Æ÷Î»ÖÃ£¬µ±ÈÎÎñ·¢Éú±ä»¯Ê±
+    //è°ƒæ•´å®šæ—¶å™¨ä½ç½®ï¼Œå½“ä»»åŠ¡å‘ç”Ÿå˜åŒ–æ—¶
     void adjust_timer(util_timer* timer);
-    //É¾³ı¶¨Ê±Æ÷
+    //åˆ é™¤å®šæ—¶å™¨
     void del_timer(util_timer* timer);
-    //¶¨Ê±ÈÎÎñ´¦Àíº¯Êı
+    //å®šæ—¶ä»»åŠ¡å¤„ç†å‡½æ•°
     void tick();
 
 private:
@@ -88,19 +88,21 @@ public:
 
     void init(int timeslot);
 
-    //¶ÔÎÄ¼şÃèÊö·ûÉèÖÃ·Ç×èÈû
+    //å¯¹æ–‡ä»¶æè¿°ç¬¦è®¾ç½®éé˜»å¡
     int setnonblocking(int fd);
 
-    //½«ÄÚºËÊÂ¼ş±í×¢²á¶ÁÊÂ¼ş£¬ETÄ£Ê½£¬Ñ¡Ôñ¿ªÆôEPOLLONESHOT
+    //å°†å†…æ ¸äº‹ä»¶è¡¨æ³¨å†Œè¯»äº‹ä»¶ï¼ŒETæ¨¡å¼ï¼Œé€‰æ‹©å¼€å¯EPOLLONESHOT
     void addfd(int epollfd, int fd, bool one_shot);
 
-    //ĞÅºÅ´¦Àíº¯Êı
+    //ä¿¡å·å¤„ç†å‡½æ•°
     static void sig_handler(int sig);
+    //ä¿¡å·å¤„ç†å‡½æ•°    åœ¨æ¥æ”¶åˆ°ctrl+cä¿¡å·æ—¶
+    static void sig_int(int sig);
 
-    //ÉèÖÃĞÅºÅº¯Êı
+    //è®¾ç½®ä¿¡å·å‡½æ•°
     void addsig(int sig, void(handler)(int), bool restart = true);
 
-    //¶¨Ê±´¦ÀíÈÎÎñ£¬ÖØĞÂ¶¨Ê±ÒÔ²»¶Ï´¥·¢SIGALRMĞÅºÅ
+    //å®šæ—¶å¤„ç†ä»»åŠ¡ï¼Œé‡æ–°å®šæ—¶ä»¥ä¸æ–­è§¦å‘SIGALRMä¿¡å·
     void timer_handler();
 
     void show_error(int connfd, const char* info);
@@ -112,7 +114,7 @@ public:
     int m_TIMESLOT;
 };
 
-//¶¨Ê±Æ÷»Øµ÷º¯Êı -- ¹Ø±ÕÎÄ¼şÃèÊö·û£¬httpÁ¬½ÓÊı-1
+//å®šæ—¶å™¨å›è°ƒå‡½æ•° -- å…³é—­æ–‡ä»¶æè¿°ç¬¦ï¼Œhttpè¿æ¥æ•°-1
 void cb_func(client_data* user_data);
 
 #endif // !TIMER

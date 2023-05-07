@@ -1,4 +1,4 @@
-#ifndef WEBSERVER_H
+ï»¿#ifndef WEBSERVER_H
 #define WEBSERVER_H
 
 #include <sys/socket.h>
@@ -16,9 +16,9 @@
 #include "../http_conn/http_conn.h"
 #include "../timer/lst_timer.h"
 
-const int MAX_FD = 65536;           //×î´óÎÄ¼şÃèÊö·û
-const int MAX_EVENT_NUMBER = 10000; //×î´óÊÂ¼şÊı
-const int TIMESLOT = 5;             //×îĞ¡³¬Ê±µ¥Î»
+const int MAX_FD = 65536;           //æœ€å¤§æ–‡ä»¶æè¿°ç¬¦
+const int MAX_EVENT_NUMBER = 10000; //æœ€å¤§äº‹ä»¶æ•°
+const int TIMESLOT = 5;             //æœ€å°è¶…æ—¶å•ä½
 
 class WebServer
 {
@@ -35,7 +35,7 @@ public:
     void eventLoop();
     void timer(int connfd, struct sockaddr_in client_address);
     void adjust_timer(util_timer* timer);
-    //É¾³ı¶¨Ê±Æ÷
+    //åˆ é™¤å®šæ—¶å™¨
     void deal_timer(util_timer* timer, int sockfd);
     bool dealclinetdata();
     bool dealwithsignal(bool& timeout, bool& stop_server);
@@ -43,7 +43,7 @@ public:
     void dealwithwrite(int sockfd);
 
 public:
-    //»ù´¡
+    //åŸºç¡€
     int m_port;
     char* m_root;
 
@@ -51,21 +51,21 @@ public:
     int m_epollfd;
     http_conn* users;
 
-    //Êı¾İ¿âÏà¹Ø
+    //æ•°æ®åº“ç›¸å…³
     sql_pool* m_connPool;
 
-    //Ïß³Ì³ØÏà¹Ø
+    //çº¿ç¨‹æ± ç›¸å…³
     thread_pool<http_conn>* m_pool;
     int m_thread_num;
 
-    //epoll_eventÏà¹Ø
+    //epoll_eventç›¸å…³
     epoll_event events[MAX_EVENT_NUMBER];
 
     int m_listenfd;
     int m_OPT_LINGER;
     
 
-    //¶¨Ê±Æ÷Ïà¹Ø
+    //å®šæ—¶å™¨ç›¸å…³
     client_data* users_timer;
     Utils utils;
 };

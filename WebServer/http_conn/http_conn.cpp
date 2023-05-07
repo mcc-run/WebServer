@@ -45,7 +45,6 @@ void http_conn::initmysql_result()
         MYSQL_ROW row = mysql_fetch_row(result);
         string temp1(row[0]);
         string temp2(row[1]);
-        cout << temp1 << " " << temp2 << endl;
         users[temp1] = temp2;
     }
 }
@@ -124,7 +123,6 @@ void http_conn::init(int sockfd, const sockaddr_in& addr)
 //check_state默认为分析请求行状态
 void http_conn::init()
 {
-    mysql = NULL;
     bytes_to_send = 0;
     bytes_have_send = 0;
     m_check_state = CHECK_STATE_REQUESTLINE;
@@ -142,6 +140,7 @@ void http_conn::init()
     m_state = 0;
     timer_flag = 0;
     improv = 0;
+    doc_root = "root";
 
     memset(m_read_buf, '\0', READ_BUFFER_SIZE);
     memset(m_write_buf, '\0', WRITE_BUFFER_SIZE);
@@ -193,7 +192,6 @@ bool http_conn::read_once()
     }
     int bytes_read = 0;
 
-    
     //ET读数据 --  必须一次性读取完所有数据
     while (true)
     {
@@ -339,14 +337,10 @@ http_conn::HTTP_CODE http_conn::process_read()
     LINE_STATUS line_status = LINE_OK;
     HTTP_CODE ret = NO_REQUEST;
     char* text = 0;
-
     while ((m_check_state == CHECK_STATE_CONTENT && line_status == LINE_OK) || ((line_status = parse_line()) == LINE_OK))
     {
         text = get_line();
         m_start_line = m_checked_idx;
-        string str = text;
-        auto info = str.c_str();
-        LOG_INFO(info);
         switch (m_check_state)
         {
             //解析请求行
@@ -434,6 +428,8 @@ http_conn::HTTP_CODE http_conn::do_request()
             if (users.find(name) == users.end())
             {
                 m_lock.lock();
+                MYSQL* mysql;
+                sql_pool_RAII getconn(&mysql);
                 int res = mysql_query(mysql, sql_insert);
                 users.insert(pair<string, string>(name, password));
                 m_lock.unlock();
@@ -444,7 +440,9 @@ http_conn::HTTP_CODE http_conn::do_request()
                     strcpy(m_url, "/registerError.html");
             }
             else
+            {
                 strcpy(m_url, "/registerError.html");
+            }
         }
         //如果是登录，直接判断
         //若浏览器端输入的用户名和密码在表中可以查找到，返回1，否则返回0
@@ -619,10 +617,6 @@ bool http_conn::add_response(const char* format, ...)
     m_write_idx += len;
     //清空可变参数列表
     va_end(arg_list);
-
-    string str = m_write_buf;
-    auto info = str.c_str();
-    LOG_INFO(info);
 
     return true;
 }

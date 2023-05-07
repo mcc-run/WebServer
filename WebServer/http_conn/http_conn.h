@@ -1,4 +1,4 @@
-#ifndef HTTPCONNECTION_H
+ï»¿#ifndef HTTPCONNECTION_H
 #define HTTPCONNECTION_H
 #include <unistd.h>
 #include <signal.h>
@@ -28,13 +28,13 @@
 class http_conn
 {
 public:
-    //ÎÄ¼þÃû³ÆµÄ´óÐ¡
+    //æ–‡ä»¶åç§°çš„å¤§å°
     static const int FILENAME_LEN = 200;
-    //¶Á»º³åÇøµÄ´óÐ¡
+    //è¯»ç¼“å†²åŒºçš„å¤§å°
     static const int READ_BUFFER_SIZE = 2048;
-    //Ð´»º³åÇøµÄ´óÐ¡
+    //å†™ç¼“å†²åŒºçš„å¤§å°
     static const int WRITE_BUFFER_SIZE = 1024;
-    //±¨ÎÄµÄÇëÇó·½·¨£¬get»òpost
+    //æŠ¥æ–‡çš„è¯·æ±‚æ–¹æ³•ï¼Œgetæˆ–post
     enum METHOD
     {
         GET = 0,
@@ -47,44 +47,44 @@ public:
         CONNECT,
         PATH
     };
-    //Ö÷×´Ì¬»úµÄ×´Ì¬
+    //ä¸»çŠ¶æ€æœºçš„çŠ¶æ€
     enum CHECK_STATE
     {
-        //½âÎöÇëÇóÐÐ
+        //è§£æžè¯·æ±‚è¡Œ
         CHECK_STATE_REQUESTLINE = 0,
-        //½âÎöÇëÇóÍ·
+        //è§£æžè¯·æ±‚å¤´
         CHECK_STATE_HEADER,
-        //½âÎöÏûÏ¢Ìå£¬½öµ±postÇëÇóÊ±²ÅÓÐÏûÏ¢Ìå
+        //è§£æžæ¶ˆæ¯ä½“ï¼Œä»…å½“postè¯·æ±‚æ—¶æ‰æœ‰æ¶ˆæ¯ä½“
         CHECK_STATE_CONTENT
     };
-    //´Ó×´Ì¬»úµÄ×´Ì¬
+    //ä»ŽçŠ¶æ€æœºçš„çŠ¶æ€
     enum LINE_STATUS
     {
-        //ÍêÕû¶ÁÈ¡Ò»ÐÐ
+        //å®Œæ•´è¯»å–ä¸€è¡Œ
         LINE_OK = 0,
-        //±¨ÎÄÓï·¨ÓÐ´íÎó
+        //æŠ¥æ–‡è¯­æ³•æœ‰é”™è¯¯
         LINE_BAD,
-        //¶ÁÈ¡µÄÐÐ²»ÍêÕû
+        //è¯»å–çš„è¡Œä¸å®Œæ•´
         LINE_OPEN
     };
-    //±¨ÎÄ½âÎöµÄ½á¹û
+    //æŠ¥æ–‡è§£æžçš„ç»“æžœ
     enum HTTP_CODE
     {
-        //ÇëÇó²»ÍêÕû£¬ÐèÒª¼ÌÐøÇëÇó±¨ÎÄÊý¾Ý
+        //è¯·æ±‚ä¸å®Œæ•´ï¼Œéœ€è¦ç»§ç»­è¯·æ±‚æŠ¥æ–‡æ•°æ®
         NO_REQUEST,
-        //»ñÈ¡µ½ÁËÍêÕûµÄhttpÇëÇó
+        //èŽ·å–åˆ°äº†å®Œæ•´çš„httpè¯·æ±‚
         GET_REQUEST,
-        //ÇëÇó±¨ÎÄÓï·¨ÓÐÎó
+        //è¯·æ±‚æŠ¥æ–‡è¯­æ³•æœ‰è¯¯
         BAD_REQUEST,
-        //ÇëÇó×ÊÔ´²»´æÔÚ
+        //è¯·æ±‚èµ„æºä¸å­˜åœ¨
         NO_RESOURCE,
-        //ÇëÇó×ÊÔ´½ûÖ¹·ÃÎÊ
+        //è¯·æ±‚èµ„æºç¦æ­¢è®¿é—®
         FORBIDDEN_REQUEST,
-        //ÇëÇó×ÊÔ´Õý³£·ÃÎÊ
+        //è¯·æ±‚èµ„æºæ­£å¸¸è®¿é—®
         FILE_REQUEST,
-        //·þÎñÆ÷ÄÚ²¿´íÎó
+        //æœåŠ¡å™¨å†…éƒ¨é”™è¯¯
         INTERNAL_ERROR,
-        //¹Ø±ÕÁ¬½Ó
+        //å…³é—­è¿žæŽ¥
         CLOSED_CONNECTION
     };
 
@@ -93,108 +93,108 @@ public:
     ~http_conn() {}
 
 public:
-    //¶ÔÀà½øÐÐ³õÊ¼»¯²Ù×÷
+    //å¯¹ç±»è¿›è¡Œåˆå§‹åŒ–æ“ä½œ
     void init(int sockfd, const sockaddr_in& addr);
-    //¹Ø±ÕhttpÁ¬½Ó
+    //å…³é—­httpè¿žæŽ¥
     void close_conn(bool real_close = true);
     
 
-    //ÓÃÓÚ´¦Àí¿Í»§¶ËµÄÇëÇó
+    //ç”¨äºŽå¤„ç†å®¢æˆ·ç«¯çš„è¯·æ±‚
     void process();
 
     
-    //¶ÁÈ¡¿Í»§¶Ë·¢ËÍ¹ýÀ´µÄÐÅÏ¢
+    //è¯»å–å®¢æˆ·ç«¯å‘é€è¿‡æ¥çš„ä¿¡æ¯
     bool read_once();
-    //ÏìÓ¦±¨ÎÄÐ´Èëº¯Êý
+    //å“åº”æŠ¥æ–‡å†™å…¥å‡½æ•°
     bool write();
 
     sockaddr_in* get_address()
     {
         return &m_address;
     }
-    //Êý¾Ý¿â³õÊ¼»¯    --  ÓÃÓÚ»ñÈ¡Êý¾Ý¿âÖÐµÄÓÃ»§ÃûºÍÃÜÂë
+    //æ•°æ®åº“åˆå§‹åŒ–    --  ç”¨äºŽèŽ·å–æ•°æ®åº“ä¸­çš„ç”¨æˆ·åå’Œå¯†ç 
     void initmysql_result();
 
 
     int timer_flag;
-    //¹¤×÷Ê±ÉèÖÃÎª1Ö±µ½¹¤×÷½áÊøÉèÖÃÎª0£¬´Ó¶øÈ·±£×îºó²»»îÔ¾Ê±¼ä
+    //å·¥ä½œæ—¶è®¾ç½®ä¸º1ç›´åˆ°å·¥ä½œç»“æŸè®¾ç½®ä¸º0ï¼Œä»Žè€Œç¡®ä¿æœ€åŽä¸æ´»è·ƒæ—¶é—´
     int improv;
 
 
 private:
     void init();
-    //¶ÁÈ¡¿Í»§¶Ë·¢ËÍ¹ýÀ´µÄÐÅÏ¢²¢´¦Àí
+    //è¯»å–å®¢æˆ·ç«¯å‘é€è¿‡æ¥çš„ä¿¡æ¯å¹¶å¤„ç†
     HTTP_CODE process_read();
-    //Ð´ÈëÏìÓ¦±¨ÎÄ
+    //å†™å…¥å“åº”æŠ¥æ–‡
     bool process_write(HTTP_CODE ret);
 
-    //Ö÷×´Ì¬»ú½âÎö±¨ÎÄÖÐµÄÇëÇóÐÐÊý¾Ý
+    //ä¸»çŠ¶æ€æœºè§£æžæŠ¥æ–‡ä¸­çš„è¯·æ±‚è¡Œæ•°æ®
     HTTP_CODE parse_request_line(char* text);
-    //Ö÷×´Ì¬»ú½âÎö±¨ÎÄÖÐµÄÇëÇóÍ·
+    //ä¸»çŠ¶æ€æœºè§£æžæŠ¥æ–‡ä¸­çš„è¯·æ±‚å¤´
     HTTP_CODE parse_headers(char* text);
-    //Ö÷×´Ì¬»ú½âÎö±¨ÎÄÖÐµÄÇëÇóÊý¾Ý
+    //ä¸»çŠ¶æ€æœºè§£æžæŠ¥æ–‡ä¸­çš„è¯·æ±‚æ•°æ®
     HTTP_CODE parse_content(char* text);
 
-    //Éú³ÉÏìÓ¦±¨ÎÄ
+    //ç”Ÿæˆå“åº”æŠ¥æ–‡
     HTTP_CODE do_request();
 
-    //»ñÈ¡µÚÒ»¸öÎ´´¦ÀíµÄÊý¾Ý
+    //èŽ·å–ç¬¬ä¸€ä¸ªæœªå¤„ç†çš„æ•°æ®
     char* get_line() { return m_read_buf + m_start_line; };
 
-    //´Ó×´Ì¬»ú¶ÁÈ¡Ò»ÐÐ£¬·ÖÎöÊÇÇëÇó±¨ÎÄµÄÄÄÒ»²¿·Ö
+    //ä»ŽçŠ¶æ€æœºè¯»å–ä¸€è¡Œï¼Œåˆ†æžæ˜¯è¯·æ±‚æŠ¥æ–‡çš„å“ªä¸€éƒ¨åˆ†
     LINE_STATUS parse_line();
 
     void unmap();
 
-    //Éú³ÉÏìÓ¦±¨ÎÄµÄ¸÷¸ö²¿·Ö
-    //Ìí¼Óµ½ÏàÓ¦±¨ÎÄÖÐ
+    //ç”Ÿæˆå“åº”æŠ¥æ–‡çš„å„ä¸ªéƒ¨åˆ†
+    //æ·»åŠ åˆ°ç›¸åº”æŠ¥æ–‡ä¸­
     bool add_response(const char* format, ...);
-    //Ìí¼ÓÎÄ±¾£¬ÇëÇóÊý¾Ý
+    //æ·»åŠ æ–‡æœ¬ï¼Œè¯·æ±‚æ•°æ®
     bool add_content(const char* content);
-    //Ìí¼Ó×´Ì¬ÐÐ
+    //æ·»åŠ çŠ¶æ€è¡Œ
     bool add_status_line(int status, const char* title);
-    //Ìí¼ÓÏûÏ¢Í·
+    //æ·»åŠ æ¶ˆæ¯å¤´
     bool add_headers(int content_length);
-    //Ìí¼ÓÎÄ±¾ÀàÐÍ£¬html
+    //æ·»åŠ æ–‡æœ¬ç±»åž‹ï¼Œhtml
     bool add_content_type();
-    //Ìí¼ÓÏàÓ¦±¨ÎÄ³¤¶È
+    //æ·»åŠ ç›¸åº”æŠ¥æ–‡é•¿åº¦
     bool add_content_length(int content_length);
-    //Ìí¼ÓÊÇ·ñ±£³ÖÁ¬½Ó
+    //æ·»åŠ æ˜¯å¦ä¿æŒè¿žæŽ¥
     bool add_linger();
-    //Ìí¼Ó¿ÕÐÐ
+    //æ·»åŠ ç©ºè¡Œ
     bool add_blank_line();
 
 public:
     static int m_epollfd;
     static int m_user_count;
-    MYSQL* mysql;
-    int m_state;  //¶ÁÎª0, Ð´Îª1
+    
+    int m_state;  //è¯»ä¸º0, å†™ä¸º1
 
 private:
-    int m_sockfd;
+    int m_sockfd;   //è¿žæŽ¥å¯¹åº”çš„æ–‡ä»¶æè¿°ç¬¦
     sockaddr_in m_address;
 
-    //¶Á»º³åÇø
+    //è¯»ç¼“å†²åŒº
     char m_read_buf[READ_BUFFER_SIZE];
-    //»º³åÇøÖÐÊý¾ÝµÄÏÂÒ»¸ö×Ö½ÚµÄÎ»ÖÃ
+    //ç¼“å†²åŒºä¸­æ•°æ®çš„ä¸‹ä¸€ä¸ªå­—èŠ‚çš„ä½ç½®
     long m_read_idx;
-    //µ±Ç°ÕýÔÚ½âÎöµÄÊý¾ÝµÄÎ»ÖÃ
+    //å½“å‰æ­£åœ¨è§£æžçš„æ•°æ®çš„ä½ç½®
     long m_checked_idx;
-    //µ±Ç°ÒÑ¾­½âÎöµÄ×Ö·û¸öÊý
+    //å½“å‰å·²ç»è§£æžçš„å­—ç¬¦ä¸ªæ•°
     int m_start_line;
 
-    //Ð´»º³åÇø
+    //å†™ç¼“å†²åŒº
     char m_write_buf[WRITE_BUFFER_SIZE];
-    //Ð´»º³åÇøÖÐÊý¾ÝµÄ³¤¶È
+    //å†™ç¼“å†²åŒºä¸­æ•°æ®çš„é•¿åº¦
     int m_write_idx;
 
-    //Ö÷×´Ì¬»úµÄ×´Ì¬
+    //ä¸»çŠ¶æ€æœºçš„çŠ¶æ€
     CHECK_STATE m_check_state;
 
-    //ÇëÇó·½·¨
+    //è¯·æ±‚æ–¹æ³•
     METHOD m_method;
 
-    //½âÎö³öµÄ±¨ÎÄÖÐµÄ¶ÔÓ¦±äÁ¿
+    //è§£æžå‡ºçš„æŠ¥æ–‡ä¸­çš„å¯¹åº”å˜é‡
     char m_real_file[FILENAME_LEN];
     char* m_url;
     char* m_version;
@@ -202,28 +202,28 @@ private:
     long m_content_length;
     bool m_linger;
 
-    //¶ÁÈ¡·þÎñÆ÷ÉÏÎÄ¼þµÄµØÖ·
+    //è¯»å–æœåŠ¡å™¨ä¸Šæ–‡ä»¶çš„åœ°å€
     char* m_file_address;
-    //ÇëÇóµÄÎÄ¼þµÄÊôÐÔ
+    //è¯·æ±‚çš„æ–‡ä»¶çš„å±žæ€§
     struct stat m_file_stat;
 
     /*
-    m_iv[0] ÓÃÓÚ´æ´¢Ð´»º³åÇøÖÐµÄÊý¾Ý£¬¼´ HTTP ÏìÓ¦Í·ºÍÏìÓ¦ÕýÎÄ¡£¶ø m_iv[1] ÓÃÓÚ´æ´¢ÇëÇóµÄÎÄ¼þµÄÄÚÈÝ¡£
-    ·þÎñÆ÷»áÊ¹ÓÃ mmap º¯Êý½«ÇëÇóµÄÎÄ¼þÓ³Éäµ½ÄÚ´æÖÐ£¬²¢½«Ó³ÉäºóµÄÄÚ´æµØÖ·ºÍÎÄ¼þ´óÐ¡·Ö±ð´æ´¢ÔÚ m_iv[1].iov_base ºÍ m_iv[1].iov_len ÖÐ¡£
-    µ±·þÎñÆ÷µ÷ÓÃ writev º¯ÊýÊ±£¬Ëü»áÒ»´ÎÐÔ½«Ð´»º³åÇøÖÐµÄÊý¾ÝºÍÇëÇóµÄÎÄ¼þµÄÄÚÈÝ·¢ËÍ¸ø¿Í»§¶Ë¡£
+    m_iv[0] ç”¨äºŽå­˜å‚¨å†™ç¼“å†²åŒºä¸­çš„æ•°æ®ï¼Œå³ HTTP å“åº”å¤´å’Œå“åº”æ­£æ–‡ã€‚è€Œ m_iv[1] ç”¨äºŽå­˜å‚¨è¯·æ±‚çš„æ–‡ä»¶çš„å†…å®¹ã€‚
+    æœåŠ¡å™¨ä¼šä½¿ç”¨ mmap å‡½æ•°å°†è¯·æ±‚çš„æ–‡ä»¶æ˜ å°„åˆ°å†…å­˜ä¸­ï¼Œå¹¶å°†æ˜ å°„åŽçš„å†…å­˜åœ°å€å’Œæ–‡ä»¶å¤§å°åˆ†åˆ«å­˜å‚¨åœ¨ m_iv[1].iov_base å’Œ m_iv[1].iov_len ä¸­ã€‚
+    å½“æœåŠ¡å™¨è°ƒç”¨ writev å‡½æ•°æ—¶ï¼Œå®ƒä¼šä¸€æ¬¡æ€§å°†å†™ç¼“å†²åŒºä¸­çš„æ•°æ®å’Œè¯·æ±‚çš„æ–‡ä»¶çš„å†…å®¹å‘é€ç»™å®¢æˆ·ç«¯ã€‚
     */
     struct iovec m_iv[2];
-    //ÐèÒª´«ÊäµÄÊý¾ÝÊý
+    //éœ€è¦ä¼ è¾“çš„æ•°æ®æ•°
     int m_iv_count;
 
-    //ÊÇ·ñÆôÓÃµÄPOST
+    //æ˜¯å¦å¯ç”¨çš„POST
     int cgi;
-    //´æ´¢ÇëÇóÍ·Êý¾Ý
+    //å­˜å‚¨è¯·æ±‚å¤´æ•°æ®
     char* m_string;
 
-    //Ê£Óà·¢ËÍµÄÊý¾Ý
+    //å‰©ä½™å‘é€çš„æ•°æ®
     int bytes_to_send;
-    //ÒÑ·¢ËÍµÄÊý¾Ý
+    //å·²å‘é€çš„æ•°æ®
     int bytes_have_send;
 
 

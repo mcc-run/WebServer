@@ -1,4 +1,4 @@
-#ifndef THREADPOOL
+ï»¿#ifndef THREADPOOL
 #define THREADPOOL
 
 
@@ -12,22 +12,22 @@ template<typename T>
 class thread_pool {
 private:
 
-	locker lock;	//»¥³â·ÃÎÊ±äÁ¿
-	int max_request;	//×î´óÇëÇóÊı
-	int cur_request;	//µ±Ç°ÇëÇóÊı
+	locker lock;	//äº’æ–¥è®¿é—®å˜é‡
+	int max_request;	//æœ€å¤§è¯·æ±‚æ•°
+	int cur_request;	//å½“å‰è¯·æ±‚æ•°
 
-	list<T*> requests;	//ÇëÇóÁĞ±í
+	list<T*> requests;	//è¯·æ±‚åˆ—è¡¨
 
-	sem isrquest;	//ĞÅºÅÁ¿£¬µÈ´ıÇëÇóµ½À´
+	sem isrquest;	//ä¿¡å·é‡ï¼Œç­‰å¾…è¯·æ±‚åˆ°æ¥
 	
-	pthread_t* mthreads;	//Ïß³ÌidÊı×é
-	int thread_count;		//Ïß³ÌÊıÁ¿
+	pthread_t* mthreads;	//çº¿ç¨‹idæ•°ç»„
+	int thread_count;		//çº¿ç¨‹æ•°é‡
 
 public:
 
 	thread_pool() { init(); }
 
-	void init();	//³õÊ¼»¯
+	void init();	//åˆå§‹åŒ–
 
 
 	bool append(T* request);
@@ -39,10 +39,7 @@ public:
 
 private:
 
-
-	
-
-	/*¹¤×÷Ïß³ÌÔËĞĞµÄº¯Êı£¬Ëü²»¶Ï´Ó¹¤×÷¶ÓÁĞÖĞÈ¡³öÈÎÎñ²¢Ö´ĞĞÖ®*/
+	/*å·¥ä½œçº¿ç¨‹è¿è¡Œçš„å‡½æ•°ï¼Œå®ƒä¸æ–­ä»å·¥ä½œé˜Ÿåˆ—ä¸­å–å‡ºä»»åŠ¡å¹¶æ‰§è¡Œä¹‹*/
 	static void* worker(void* arg);
 	void run();
 
@@ -56,7 +53,7 @@ inline void thread_pool<T>::init()
 	cur_request = 0;
 	lock.unlock();
 
-	isrquest = sem(max_request);
+	isrquest = sem(0);
 
 	thread_count = 30;
 	mthreads = new pthread_t[thread_count];
@@ -66,13 +63,13 @@ inline void thread_pool<T>::init()
 		if (pthread_create(mthreads + i, NULL, worker, this) != 0)
 		{
 			delete[] mthreads;
-			LOG_ERROR("Ïß³Ì´´½¨Ê§°Ü");
+			LOG_ERROR("çº¿ç¨‹åˆ›å»ºå¤±è´¥");
 			throw std::exception();
 		}
 		if (pthread_detach(mthreads[i]))
 		{
 			delete[] mthreads;
-			LOG_ERROR("Ïß³Ì·ÖÀëÊ§°Ü");
+			LOG_ERROR("çº¿ç¨‹åˆ†ç¦»å¤±è´¥");
 			throw std::exception();
 		}
 	}
@@ -82,7 +79,7 @@ inline void thread_pool<T>::init()
 template<typename T>
 inline bool thread_pool<T>::append(T* request)
 {
-	//¼ì²éÇëÇó¶ÓÁĞÊÇ·ñÒÑÂú
+	//æ£€æŸ¥è¯·æ±‚é˜Ÿåˆ—æ˜¯å¦å·²æ»¡
 
 	lock.lock();
 	if (cur_request >= max_request) {
@@ -90,8 +87,9 @@ inline bool thread_pool<T>::append(T* request)
 		return false;
 	}
 
-	//½«ÇëÇóÌí¼ÓÖÁÇëÇóÁĞ±íÖĞ
+	//å°†è¯·æ±‚æ·»åŠ è‡³è¯·æ±‚åˆ—è¡¨ä¸­
 	requests.push_back(request);
+	cur_request++;
 	lock.unlock();
 	isrquest.post();
 	return true;
@@ -118,13 +116,13 @@ inline void thread_pool<T>::run()
 			continue;
 		}
 
-		//È¡³öÈÎÎñ
+		//å–å‡ºä»»åŠ¡
 		T* request = requests.front();
 		requests.pop_front();
 		lock.unlock();
 
 		if (request == nullptr)continue;
-		//´¦ÀíÇëÇó
+		//å¤„ç†è¯·æ±‚
 		request->process();
 	}
 }
